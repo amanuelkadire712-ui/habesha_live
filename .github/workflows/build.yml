@@ -1,9 +1,8 @@
-name: Build Android APK
+name: Build APK
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   build:
@@ -12,26 +11,23 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up Java
-      uses: actions/setup-java@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        distribution: 'zulu'
-        java-version: '17'
+        python-version: '3.10'
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+    - name: Build with Buildozer
+      uses: ArtemSBulgakov/buildozer-action@v1
       with:
-        flutter-version: '3.19.0'
-        channel: 'stable'
-
-    - name: Get dependencies
-      run: flutter pub get
-
-    - name: Build APK
-      run: flutter build apk --release
+        command: buildozer -v android debug
 
     - name: Upload APK
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
-        name: app-release
-        path: build/app/outputs/flutter-apk/app-release.apk
+        name: habesha-live-apk
+        path: bin/*.apk
