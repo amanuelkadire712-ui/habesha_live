@@ -1,33 +1,26 @@
-name: Build APK
+[app]
 
-on:
-  push:
-    branches: [ main ]
+# (str) Title of your application
+title = Habesha Live
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# (str) Package name
+package.name = habeshalive
 
-    steps:
-    - uses: actions/checkout@v3
+# (str) Package domain (needed for android packaging)
+package.domain = org.habeshalive
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+# (list) Source files to include (let it empty to include all the files)
+source.include_exts = py,png,jpg,kv,atlas,json
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+# (list) Application requirements
+requirements = python3,kivy
 
-    - name: Build with Buildozer
-      uses: ArtemSBulgakov/buildozer-action@v1
-      with:
-        command: buildozer -v android debug
+# (str) Supported orientations
+orientation = portrait
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: habesha-live-apk
-        path: bin/*.apk
+# (list) Permissions
+android.permissions = INTERNET
+
+[buildozer]
+# (int) Log level (0 = error, 1 = info, 2 = debug)
+log_level = 2
